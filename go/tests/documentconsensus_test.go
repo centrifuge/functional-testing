@@ -17,50 +17,31 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 	e1 := utils.GetInsecureClient(t, utils.NODE2)
 
 	// create invoice
-	currency := "USD"
 	payload := map[string]interface{}{
-		"data": map[string]interface{}{
-			"number":       "12324",
-			"date_due":     "2018-09-26T23:12:37.902198664Z",
-			"gross_amount": "40",
-			"currency":     currency,
-			"net_amount":   "40",
-		},
+		"scheme":       "generic",
+		"data":         map[string]interface{}{},
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusAccepted)
+	obj := CreateDocument(t, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusAccepted)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
-	doc := GetDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
-	doc.Path("$.data.currency").String().Equal(currency)
-
-	// Receiver has document
-	doc = GetDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
-	doc.Path("$.data.currency").String().Equal(currency)
-
 	// update invoice
 	payload = map[string]interface{}{
-		"data": map[string]interface{}{
-			"number":       "12324",
-			"date_due":     "2018-09-26T23:12:37.902198664Z",
-			"gross_amount": "41",
-			"currency":     currency,
-			"net_amount":   "41",
-		},
+		"scheme":       "generic",
+		"data":         map[string]interface{}{},
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj = UpdateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload, http.StatusAccepted)
+	obj = UpdateDocument(t, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload, http.StatusAccepted)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.gross_amount").String().Equal("41")
-	GetDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
+	GetDocument(t, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
 
 	// Receiver has document
-	doc = GetDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
-	doc.Path("$.data.gross_amount").String().Equal("41")
+	GetDocument(t, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 }
 
 func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
@@ -68,63 +49,44 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 	e := utils.GetInsecureClient(t, utils.NODE1)
 	e1 := utils.GetInsecureClient(t, utils.NODE2)
 
-	// create invoice
-	currency := "USD"
+	// create document
 	payload := map[string]interface{}{
-		"data": map[string]interface{}{
-			"number":       "12324",
-			"date_due":     "2018-09-26T23:12:37.902198664Z",
-			"gross_amount": "40",
-			"currency":     currency,
-			"net_amount":   "40",
-		},
+		"scheme":       "generic",
+		"data":         map[string]interface{}{},
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusAccepted)
+	obj := CreateDocument(t, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusAccepted)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
-	doc := GetDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
-	doc.Path("$.data.currency").String().Equal(currency)
-
-	// Receiver has document
-	doc = GetDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
-	doc.Path("$.data.currency").String().Equal(currency)
-
-	// update invoice
+	// update document
 	payload = map[string]interface{}{
-		"data": map[string]interface{}{
-			"number":       "12324",
-			"date_due":     "2018-09-26T23:12:37.902198664Z",
-			"gross_amount": "41",
-			"currency":     currency,
-			"net_amount":   "41",
-		},
+		"scheme":       "generic",
+		"data":         map[string]interface{}{},
 		"write_access": []string{utils.Nodes[utils.NODE1].ID},
 	}
 
-	obj = UpdateDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload, http.StatusAccepted)
+	obj = UpdateDocument(t, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload, http.StatusAccepted)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.gross_amount").String().Equal("41")
-	GetDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
+	GetDocument(t, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 
 	// Receiver has document
-	doc = GetDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
-	doc.Path("$.data.gross_amount").String().Equal("41")
+	GetDocument(t, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
 }
 
-func GetDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, docIdentifier string) *httpexpect.Value {
-	objGet := utils.AddCommonHeaders(e.GET(fmt.Sprintf("/v1/%s/%s", docType, docIdentifier)), auth).
+func GetDocument(t *testing.T, e *httpexpect.Expect, auth string, docIdentifier string) *httpexpect.Value {
+	objGet := utils.AddCommonHeaders(e.GET(fmt.Sprintf("/v1/documents/%s", docIdentifier)), auth).
 		Expect().Status(http.StatusOK)
 	assertOkResponse(t, objGet, http.StatusOK)
 	objGet.JSON().Path("$.header.document_id").String().Equal(docIdentifier)
 	return objGet.JSON()
 }
 
-func CreateDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, payload map[string]interface{}, status int) *httpexpect.Object {
-	path := fmt.Sprintf("/v1/%s", docType)
+func CreateDocument(t *testing.T, e *httpexpect.Expect, auth string, payload map[string]interface{}, status int) *httpexpect.Object {
+	path := fmt.Sprintf("/v1/%s", "documents")
 	method := "POST"
 	resp := getResponse(method, path, e, auth, payload).Status(status)
 	assertOkResponse(t, resp, status)
@@ -134,8 +96,8 @@ func CreateDocument(t *testing.T, docType string, e *httpexpect.Expect, auth str
 	return obj
 }
 
-func UpdateDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, documentID string, payload map[string]interface{}, status int) *httpexpect.Object {
-	path := fmt.Sprintf("/v1/%s/%s", docType, documentID)
+func UpdateDocument(t *testing.T, e *httpexpect.Expect, auth string, documentID string, payload map[string]interface{}, status int) *httpexpect.Object {
+	path := fmt.Sprintf("/v1/documents/%s", documentID)
 	method := "PUT"
 	resp := getResponse(method, path, e, auth, payload).Status(status)
 	assertOkResponse(t, resp, status)

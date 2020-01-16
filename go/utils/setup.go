@@ -9,9 +9,8 @@ import (
 )
 
 const (
-	NODE1   = "node1"
-	NODE2   = "node2"
-	INVOICE = "invoices"
+	NODE1 = "node1"
+	NODE2 = "node2"
 )
 
 var Nodes map[string]node

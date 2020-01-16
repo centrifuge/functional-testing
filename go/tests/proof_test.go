@@ -11,30 +11,24 @@ import (
 func TestProofGenerationWithMultipleFields(t *testing.T) {
 	e := utils.GetInsecureClient(t, utils.NODE1)
 
-	currency := "USD"
 	payload := map[string]interface{}{
-		"data": map[string]interface{}{
-			"number":       "12324",
-			"date_due":     "2018-09-26T23:12:37.902198664Z",
-			"gross_amount": "40",
-			"currency":     currency,
-			"net_amount":   "40",
-		},
+		"scheme": "generic",
+		"data":   map[string]interface{}{},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusAccepted)
+	obj := CreateDocument(t, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusAccepted)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
 	proofPayload := map[string]interface{}{
-		"fields": []string{"invoice.net_amount", "invoice.currency"},
+		"fields": []string{"generic.scheme", "cd_tree.document_identifier"},
 	}
 
 	objProof := GetProof(t, e, utils.Nodes[utils.NODE1].ID, docIdentifier, proofPayload)
 	objProof.Path("$.header.document_id").String().Equal(docIdentifier)
-	objProof.Path("$.field_proofs[0].property").String().Equal("0x000100000000002d") // invoice.net_amount
+	objProof.Path("$.field_proofs[0].property").String().Equal("0x0005000000000001") // generic.scheme
 	objProof.Path("$.field_proofs[0].sorted_hashes").NotNull()
-	objProof.Path("$.field_proofs[1].property").String().Equal("0x000100000000000d") // invoice.currency
+	objProof.Path("$.field_proofs[1].property").String().Equal("0x0100000000000009") // cd_tree.document_identifier
 	objProof.Path("$.field_proofs[1].sorted_hashes").NotNull()
 }
 

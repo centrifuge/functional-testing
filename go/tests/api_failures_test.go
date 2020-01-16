@@ -46,5 +46,5 @@ func testWrongFormat(t *testing.T, docType string) {
 }
 
 func TestEmptyAndWrongInvoiceFormat(t *testing.T) {
-	testWrongFormat(t, utils.INVOICE)
+	testWrongFormat(t, "documents")
 }

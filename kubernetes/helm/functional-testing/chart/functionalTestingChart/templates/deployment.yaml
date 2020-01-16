@@ -13,6 +13,8 @@ spec:
               value: {{ $.Values.nodes }}
             - name: NETWORK
               value: {{ $.Values.network }}
+            - name: IDS
+              value: {{ $.Values.ids}}
           image: 'centrifugeio/functional-testing:latest'
           imagePullPolicy: Always
           name: functional-testing

@@ -6,5 +6,7 @@ nodes: 'http://35.246.219.157:8082,http://35.242.232.61:8082'
 
 network: 'russianhill'
 
+ids: '0xF4F58f2e86C8546d7BE1ED43b347f09a91f85be8,0x331db0dCDd37ceAD608416df2697c0F28c246f8a'
+
 namespace: default
 
