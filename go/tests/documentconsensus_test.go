@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
+func TestCreateAndUpdateDocumentFromOrigin(t *testing.T) {
 	// nodes
 	e := utils.GetInsecureClient(t, utils.NODE1)
 	e1 := utils.GetInsecureClient(t, utils.NODE2)
@@ -35,16 +35,13 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 	}
 
 	obj = UpdateDocument(t, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload, http.StatusAccepted)
-
-	// check updated gross amount
-	obj.Value("data").Path("$.gross_amount").String().Equal("41")
 	GetDocument(t, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
 
 	// Receiver has document
 	GetDocument(t, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 }
 
-func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
+func TestCreateAndUpdateDocumentFromCollaborator(t *testing.T) {
 	// nodes
 	e := utils.GetInsecureClient(t, utils.NODE1)
 	e1 := utils.GetInsecureClient(t, utils.NODE2)
@@ -68,9 +65,6 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 	}
 
 	obj = UpdateDocument(t, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload, http.StatusAccepted)
-
-	// check updated gross amount
-	obj.Value("data").Path("$.gross_amount").String().Equal("41")
 	GetDocument(t, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 
 	// Receiver has document
