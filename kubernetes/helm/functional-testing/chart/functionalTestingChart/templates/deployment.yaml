@@ -14,11 +14,11 @@ spec:
             - name: NETWORK
               value: {{ $.Values.network }}
             - name: IDS
-              value: {{ $.Values.ids}}
+              value: {{ $.Values.ids | quote }}
             - name: NFT_REGISTRY
-              value: {{ $.Values.registry_address}}
+              value: {{ $.Values.registry_address | quote }}
             - name: NFT_ASSET
-              value: {{ $.Values.asset_address}}
+              value: {{ $.Values.asset_address | quote }}
           image: 'centrifugeio/functional-testing:latest'
           imagePullPolicy: Always
           name: functional-testing
