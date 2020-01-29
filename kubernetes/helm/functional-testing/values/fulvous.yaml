@@ -1,0 +1,15 @@
+# Default values for centNodeChart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nodes: 'http://35.246.188.161:8082,http://35.246.209.16:8082'
+
+network: 'fulvous'
+
+ids: '0xdF4c909513fc38e4565593887423704b28CC5a82,0x0b0f6Af4F9a90f72e8Aecd4887a9daD3a41C8c99'
+
+asset_address: '0x445982361d26f22f1e3c0385eb6c31b3f423acb1'
+registry_address: '0xb56ac47948157a7259ac2b72b950193a7fa40f81'
+
+namespace: default
+

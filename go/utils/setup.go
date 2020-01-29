@@ -15,6 +15,8 @@ const (
 
 var Nodes map[string]node
 var Network string
+var RegistryAddress string
+var AssetAddress string
 
 type node struct {
 	ID   string
@@ -48,9 +50,15 @@ func SetupEnvironment() {
 
 	Network = os.Getenv("NETWORK")
 	if Network == "" {
-		Network = "testing"
+		Network = "fulvous"
 	}
 
+	RegistryAddress = os.Getenv("NFT_REGISTRY")
+	AssetAddress = os.Getenv("NFT_ASSET")
+	if RegistryAddress == "" || AssetAddress == "" {
+		RegistryAddress = "0xb56ac47948157a7259ac2b72b950193a7fa40f81"
+		AssetAddress = "0x445982361d26f22f1e3c0385eb6c31b3f423acb1"
+	}
 }
 
 func GetInsecureClient(t *testing.T, nodeId string) *httpexpect.Expect {

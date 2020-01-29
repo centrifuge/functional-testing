@@ -15,6 +15,10 @@ spec:
               value: {{ $.Values.network }}
             - name: IDS
               value: {{ $.Values.ids}}
+            - name: NFT_REGISTRY
+              value: {{ $.Values.registry_address}}
+            - name: NFT_ASSET
+              value: {{ $.Values.asset_address}}
           image: 'centrifugeio/functional-testing:latest'
           imagePullPolicy: Always
           name: functional-testing
