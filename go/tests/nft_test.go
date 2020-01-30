@@ -41,7 +41,7 @@ func TestCreateNFT(t *testing.T) {
 }
 
 func MintInvoiceUnpaidNFT(t *testing.T, e *httpexpect.Expect, auth, registry string, payload map[string]interface{}) *httpexpect.Object {
-	path := fmt.Sprintf("/beta/nfts/registries/%s/mint", registry)
+	path := fmt.Sprintf("/v1/nfts/registries/%s/mint", registry)
 	method := "POST"
 	resp := getResponse(method, path, e, auth, payload).Status(http.StatusAccepted)
 	assertOkResponse(t, resp, http.StatusAccepted)
