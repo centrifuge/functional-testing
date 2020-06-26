@@ -29,7 +29,7 @@ func TestCreateNFT(t *testing.T) {
 		"attributes": AttributeMapRequest{
 			"Originator": AttributeRequest{
 				Type: "bytes",
-				Value: "0xdF4c909513fc38e4565593887423704b28CC5a82",
+				Value: utils.Nodes[utils.NODE1].ID,
 			},
 			"AssetValue": AttributeRequest{
 				Type: "decimal",

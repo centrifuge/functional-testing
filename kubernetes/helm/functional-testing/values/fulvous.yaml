@@ -8,8 +8,8 @@ network: 'fulvous'
 
 ids: '0xdF4c909513fc38e4565593887423704b28CC5a82,0x0b0f6Af4F9a90f72e8Aecd4887a9daD3a41C8c99'
 
-asset_address: '0x327b61129d4a4040d328967cae5cda95d0489b00'
-registry_address: '0xb2bea51081e87d81229790e978fc119e827c9033'
+asset_address: '0xa0764952f9599cd0c4b3fddcac20293eee99c3e5'
+registry_address: '0x52a8f8f1864657db26a683691e9c2376abc5948b'
 
 namespace: default
 
